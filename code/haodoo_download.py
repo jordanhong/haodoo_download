@@ -128,9 +128,11 @@ def downloadFile(downloadInstance, command_str, data_content, start_search_index
     file_name = author_name + '_' + book_name + '_' + download_file_name + file_surfix
     
     cwd = os.getcwd()
-    cur_path = os.path.join(cwd, category_name)
+    # cur_path = os.path.join(cwd, category_name)
+    cur_path = os.path.join(cwd, category_name, author_name)
     if (not os.path.exists(cur_path)):
-        os.mkdir(cur_path)
+        # os.mkdir(cur_path)
+        os.makdirs(cur_path)
         
     full_file_path = os.path.join(cur_path, file_name)
     if (os.path.exists(full_file_path) and os.path.isfile(full_file_path)):
@@ -140,6 +142,7 @@ def downloadFile(downloadInstance, command_str, data_content, start_search_index
     book_name_sub_url = '?M=d&P='            
     book_name_sub_url += download_file_name
     book_name_sub_url += file_surfix
+    print('Preparing download: %s;' % (full_file_path))
     download_data = downloadInstance.doDownload(book_name_sub_url, False)
     if (not download_data):
         return
@@ -179,7 +182,7 @@ def parseBookContent(htmlData, book_name, author_name, category_name, downloadIn
         index3 += len('<input type=\"button\"')
         
         # print('book name: ' + book_name)
-        downloadFile(downloadInstance, 'DownloadUpdb', htmlData, index3, book_name, author_name, category_name)
+        # downloadFile(downloadInstance, 'DownloadUpdb', htmlData, index3, book_name, author_name, category_name)
         downloadFile(downloadInstance, 'DownloadEpub', htmlData, index3, book_name, author_name, category_name)
         downloadFile(downloadInstance, 'DownloadVEpub', htmlData, index3, book_name, author_name, category_name)
         
@@ -244,17 +247,21 @@ if __name__ == '__main__':
         print('index: %d; sub-url: %s; title: %s' % (index, sub_url, sub_url_list[index + 1]))
         file_name = sub_url_list[index + 1] + '.html'
         content = downloadInstance.doDownload(sub_url)
+        print("Downloading: %s" % (sub_url_list[index+1]));
         if (not content):
             continue
             
         author_list = parseParentContent(content)
         for author_info in author_list:
+            # print ("Author: %s" %(author_info.name_))
             for book_info in author_info.books_:
-                content = downloadInstance.doDownload(book_info.sub_url_)
-                if (not content):
-                    continue
+                if (author_info.name_ == "金庸"):
+                    # print("Author: %s; Book: %s" % (author_info.name_, book_info.name_) )
+                    content = downloadInstance.doDownload(book_info.sub_url_)
+                    if (not content):
+                        continue
                     
-                parseBookContent(content, book_info.name_, author_info.name_, sub_url_list[index + 1], downloadInstance)    
+                    parseBookContent(content, book_info.name_, author_info.name_, sub_url_list[index + 1], downloadInstance)    
         
     
         
