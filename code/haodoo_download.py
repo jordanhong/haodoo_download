@@ -255,13 +255,12 @@ if __name__ == '__main__':
         for author_info in author_list:
             # print ("Author: %s" %(author_info.name_))
             for book_info in author_info.books_:
-                if (author_info.name_ == "金庸"):
-                    # print("Author: %s; Book: %s" % (author_info.name_, book_info.name_) )
-                    content = downloadInstance.doDownload(book_info.sub_url_)
-                    if (not content):
-                        continue
-                    
-                    parseBookContent(content, book_info.name_, author_info.name_, sub_url_list[index + 1], downloadInstance)    
+                # print("Author: %s; Book: %s" % (author_info.name_, book_info.name_) )
+                content = downloadInstance.doDownload(book_info.sub_url_)
+                if (not content):
+                    continue
+                
+                parseBookContent(content, book_info.name_, author_info.name_, sub_url_list[index + 1], downloadInstance)    
         
     
         
